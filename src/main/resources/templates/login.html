@@ -1,10 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head>
+	<head th:replace="fragments/base :: header-css">
 		<meta charset="ISO-8859-1">
 		<title>Login</title>
 	</head>
 	<body>
-		<p>This is the login page.</p>
+		<header th:replace="fragments/base :: header"></header>
+		
+		<div class="container">
+		    <div class="row" style="margin-top:20px">
+		        <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+		            <form th:action="@{/login}" method="post">
+		                <fieldset>
+		                    <h1>Please log in to play!</h1>
+		
+		                    <div th:if="${param.error}">
+		                        <div class="alert alert-danger">
+		                            Invalid username or password.
+		                        </div>
+		                    </div>
+		                    <div th:if="${param.logout}">
+		                        <div class="alert alert-info">
+		                            Logged out succesfully.
+		                        </div>
+		                    </div>
+		
+		                    <div class="form-group">
+		                        <input type="text" name="username" id="username" class="form-control input-lg"
+		                               placeholder="Username" required="true"/>
+		                    </div>
+		                    <div class="form-group">
+		                        <input type="password" name="password" id="password" class="form-control input-lg"
+		                               placeholder="Password" required="true"/>
+		                    </div>
+		
+		                    <div class="row">
+		                        <div class="col-xs-6 col-sm-6 col-md-6">
+		                            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Log in"/>
+		                        </div>
+		                        <div class="col-xs-6 col-sm-6 col-md-6">
+		                        </div>
+		                    </div>
+		                </fieldset>
+		            </form>
+		            <br>
+		            <form action="/registration" method="get">
+		            <div class="row">
+                       <div class="col-xs-6 col-sm-6 col-md-6">
+                           <input type="submit" class="btn btn-lg btn-primary btn-block" value="Create an account"/>
+                       </div>
+                       <div class="col-xs-6 col-sm-6 col-md-6">
+                       </div>
+                   </div>
+                   </form>
+		        </div>
+		        
+		    </div>
+
+		</div>
+		
+		
 	</body>
 </html>
