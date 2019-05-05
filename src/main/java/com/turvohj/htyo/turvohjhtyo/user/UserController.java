@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,13 +69,19 @@ public class UserController {
 	}
 	
 	@GetMapping("/registration")
-	public String register() {
+	public String register(Model model) {
+		model.addAttribute("user", new User());
+		
 		return "registration";
 	}
 	
 	@PostMapping("/registration")
-	public String register(User user) {
+	public String register(@ModelAttribute("user") User user, BindingResult bindingResult) {
 		// TODO: Validate
+		
+		if (bindingResult.hasErrors()) {
+            return "registration";
+        }
 		
 		userService.save(user);
 		
