@@ -60,13 +60,15 @@ public class UserController {
 		return ResponseEntity.created(location).build();
 	}*/
 	
-	//POST login is provided by Spring Security!
+	
 	
 	@GetMapping("/login")
 	public String login() {
 		//model.addAttribute("name", name);
 		return "login";
 	}
+	
+	//POST login is provided by Spring Security!
 	
 	@GetMapping("/registration")
 	public String register(Model model) {
@@ -86,5 +88,11 @@ public class UserController {
 		userService.save(user);
 		
 		return "redirect:/login";
+	}
+	
+	@GetMapping("/play")
+	public String play() {
+		
+		return "gameview";
 	}
 }

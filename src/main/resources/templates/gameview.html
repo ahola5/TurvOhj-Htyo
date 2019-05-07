@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments/base :: header-css">
+		<meta charset="ISO-8859-1">
+		<title>Game</title>
+	</head>
+	<body>
+		<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+		<header th:replace="fragments/base :: header"></header>
+		
+		
+		<div>
+		  <h1 id="msg"></h1>
+		  <h1 id="msg_guess">Guess the word!</h1>
+		  
+		  <h2 id="guessed"></h2>
+		  <input id="input_guess" type="text" maxlength="1"
+		  onkeypress="return (event.charCode > 64 && 
+			event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)">
+		  <button id="myButton" onclick="playRound()">Guess</button>
+		  
+		  <h1 id="msg_info"></h1>
+		  <h1 id="msg_letters"></h1>
+		  <h1 id="msg_guesses"></h1>
+		</div>
+		
+		
+		<script>
+	
+		var word = 'zebra';
+		var word_original = 'zebra';
+		var word_underscored = createUnderscores(word);
+		var guess_amount = 6;
+		var correct_guesses = 0;
+	
+		function createUnderscores(word) {
+		  var size = word.length;
+		  var underscores = "";
+		  
+		  while (size != 0) {
+		    underscores = underscores + "_";
+		    size--;
+		  }
+		  
+		  return underscores;
+		}
+	
+		function setCharAt(str,index,chr) {
+		  if(index > str.length-1) return str;
+		  return str.substr(0,index) + chr + str.substr(index+1);
+		}
+	
+		function playRound() {
+		    
+		  //var letter = document.getElementById('input_guess').value.toLowerCase();
+		  //document.getElementById('input_guess').value = '';
+		  var letter = $('#input_guess').val().toLowerCase();
+		  $('#input_guess').val('');
+		  $('#msg_info').html("");
+		  
+		  var idx = word.indexOf(letter);
+		  
+		  if (idx == -1) {
+		    $('#msg_info').html("WRONG!");
+		  }
+		  else {
+		    correct_guesses++;
+		    $('#msg_info').html("CORRECT!");
+		    while (idx != -1) {
+		      
+		      word_underscored = setCharAt(word_underscored, idx, letter);
+		      $('#msg').html(word_underscored)
+		      $('#msg_letters').html("Letters to guess: " + (word.length - correct_guesses))
+		      
+		      var guessed_word = word.slice(idx+1);
+		      var idx = guessed_word.indexOf(letter);
+		      word = word.replace(letter, "!");
+		      console.log("guessed_word: " + guessed_word);
+		      console.log("word: " + word);
+		    }
+		  }
+		  guess_amount--;
+		  
+		  if (correct_guesses == word_original.length) {
+			  $('#msg_info').html("You won!")
+		  }
+		  else if (guess_amount == 0) {
+			  $('#msg_info').html("Game over! The word was: " + word_original)
+		  }
+		  
+		  $('#msg_guesses').html("Guesses left: " + guess_amount)
+		}
+	
+		$('#msg').html(word_underscored)
+	
+	
+		</script>
+	</body>
+</html>
