@@ -1,6 +1,7 @@
 package com.turvohj.htyo.turvohjhtyo.user;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -78,8 +80,16 @@ public class UserController {
 	}
 	
 	@PostMapping("/registration")
-	public String register(@ModelAttribute("user") User user, BindingResult bindingResult) {
-		// TODO: Validate
+	public String register(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
+		
+		if (userService.findByUsername(user.getUsername()) != null) {
+			bindingResult.rejectValue("username", null, "Username already exists!");
+		}
+		if ( !user.getPassword().equals(user.getConfirmPassword()) ) {
+			bindingResult.rejectValue("confirmPassword", null, "Passwords must match!");
+			bindingResult.rejectValue("password", null, "Passwords must match!");
+			return "registration";
+		}
 		
 		if (bindingResult.hasErrors()) {
             return "registration";
@@ -91,8 +101,26 @@ public class UserController {
 	}
 	
 	@GetMapping("/play")
-	public String play() {
+	public String play(Model model) {
+		model.addAttribute("userinput", new UserInput());
 		
 		return "gameview";
+	}
+	
+	@PostMapping("/play")
+	public String play(@Valid @ModelAttribute("userinput") UserInput userInput, BindingResult bindingResult) {
+		
+		if (bindingResult.hasErrors()) {
+			
+            return "gameview";
+        }
+		System.out.println("jaaahas");
+		return "gameview";
+	}
+	
+	@GetMapping("/")
+	public String home() {
+		
+		return "homepage";
 	}
 }

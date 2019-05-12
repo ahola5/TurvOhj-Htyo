@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments/base :: baseTemplate">
+		<meta charset="ISO-8859-1">
+		<title>Home</title>
+	</head>
+	<body>
+		<header th:replace="fragments/base :: header"></header>
+		
+		<div class="container">
+		    <div class="row" style="margin-top:20px">
+		    <div class=text-center>
+				<form th:action="@{/play}" method="get">
+					
+				    <div class="col-xs-4 col-sm-4 col-md-4">
+				        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Play"/>
+				    </div>
+				   	<div class="col-xs-4 col-sm-4 col-md-4">
+				   		<input type="submit" class="btn btn-lg btn-primary btn-block" value="Play"/>
+				    </div>
+					
+				</form>
+			</div>
+			</div>
+		</div>
+	</body>
+</html>

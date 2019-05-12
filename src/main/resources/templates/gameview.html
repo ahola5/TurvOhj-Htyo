@@ -1,28 +1,65 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head th:replace="fragments/base :: header-css">
-		<meta charset="ISO-8859-1">
-		<title>Game</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="fragments/base :: baseTemplate">
+		<meta charset="ISO-8859-1"/>
+		<title>Play</title>
 	</head>
 	<body>
 		<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
 		<header th:replace="fragments/base :: header"></header>
 		
-		
-		<div>
-		  <h1 id="msg"></h1>
-		  <h1 id="msg_guess">Guess the word!</h1>
-		  
-		  <h2 id="guessed"></h2>
-		  <input id="input_guess" type="text" maxlength="1"
-		  onkeypress="return (event.charCode > 64 && 
-			event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)">
-		  <button id="myButton" onclick="playRound()">Guess</button>
-		  
-		  <h1 id="msg_info"></h1>
-		  <h1 id="msg_letters"></h1>
-		  <h1 id="msg_guesses"></h1>
-		</div>
+		<h1>Guess the word!</h1>
+    	
+	    <div class="row">
+	      <div class="col-xs-2 col-sm-2 col-md-2">
+	          <h5 id="msg" align=center></h5>
+	      </div>
+	      <div class="col-xs-2 col-sm-2 col-md-2">
+	      	<input type="submit" id="newGameButton"
+        		class="btn btn-block btn-warning" value="New Game"
+        		onclick="startNewGame()">
+	      </div>
+	      <div class="col-xs-8 col-sm-8 col-md-8">
+	      	<h5 id="msg_letters"></h5>
+	      </div>
+	    </div>
+	    
+	    <div class="row">
+	    <form th:action="@{/play}" th:object="${userinput}" method="post">
+	      <div class="col-xs-2 col-sm-2 col-md-2 form-group">
+	      	
+	          <input id="input_guess" type="text" maxlength="1"
+			  	onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)"
+				class="center-block form-control input-md"
+				placeholder="Letter"
+				required="true"
+				th:field="*{content}">
+			  <span id="msg_help" class="help-block"></span>
+			
+	      </div>
+	      <div class="col-xs-2 col-sm-2 col-md-2">
+        		<input type="submit" id="playButton"
+        		class="btn btn-block btn-primary" value="Guess"
+        		onclick="playRound()">
+			</div>
+		</form>
+	      <div class="col-xs-8 col-sm-8 col-md-8">
+	          <h5 id="msg_lifes"></h5>
+	      </div>
+	    </div>
+	    <div class="row">
+	    	<div class="col-xs-2 col-sm-2 col-md-2">
+	      	</div>
+			<div class="col-xs-2 col-sm-2 col-md-2">
+				<h3 id="msg_info"></h3>
+			</div>
+		    <div class="col-xs-8 col-sm-8 col-md-8">
+		        
+		    </div>
+	    </div>
+	    
+	    
 		
 		
 		<script>
@@ -30,7 +67,7 @@
 		var word = 'zebra';
 		var word_original = 'zebra';
 		var word_underscored = createUnderscores(word);
-		var guess_amount = 6;
+		var lifes = 5;
 		var correct_guesses = 0;
 	
 		function createUnderscores(word) {
@@ -49,49 +86,102 @@
 		  if(index > str.length-1) return str;
 		  return str.substr(0,index) + chr + str.substr(index+1);
 		}
+		
+		function setDefaultValues() {
+			word = 'zebra';
+			word_original = 'zebra';
+			word_underscored = createUnderscores(word);
+			lifes = 5;
+			correct_guesses = 0;
+			
+			$('#msg').html(word_underscored)
+			$('#msg_letters').html("Letters left: " + (word.length - correct_guesses))
+			$('#msg_lifes').html("Lifes left: " + lifes)
+			$('#msg_info').html("")
+		}
+		
+		function disableInputs() {
+			$('#playButton').prop('disabled', true);
+			$("#input_guess").prop('disabled', true);
+		}
+		
+		function enableInputs() {
+			$('#playButton').prop('disabled', false);
+			$("#input_guess").prop('disabled', false);
+		}
+		
+		function isLetter(str) {
+			return str.length === 1 && str.match(/[a-zA-Z]/i);
+		}
 	
 		function playRound() {
 		    
-		  //var letter = document.getElementById('input_guess').value.toLowerCase();
-		  //document.getElementById('input_guess').value = '';
 		  var letter = $('#input_guess').val().toLowerCase();
 		  $('#input_guess').val('');
+		  
+		  if (!isLetter(letter)) {
+			  $('#msg_help').val('Input must be a letter!');
+		  	  return;
+		  }
+		  
 		  $('#msg_info').html("");
 		  
 		  var idx = word.indexOf(letter);
 		  
 		  if (idx == -1) {
-		    $('#msg_info').html("WRONG!");
+		    $('#msg_info').html("WRONG!").css('color', 'red');
+		    lifes--;
 		  }
 		  else {
 		    correct_guesses++;
-		    $('#msg_info').html("CORRECT!");
+		    $('#msg_info').html("CORRECT!").css('color', 'green');
+		    
 		    while (idx != -1) {
 		      
 		      word_underscored = setCharAt(word_underscored, idx, letter);
 		      $('#msg').html(word_underscored)
-		      $('#msg_letters').html("Letters to guess: " + (word.length - correct_guesses))
+		      $('#msg_letters').html("Letters left: " + (word_original.length - correct_guesses))
 		      
-		      var guessed_word = word.slice(idx+1);
-		      var idx = guessed_word.indexOf(letter);
-		      word = word.replace(letter, "!");
-		      console.log("guessed_word: " + guessed_word);
+		      //var guessed_word = word.slice(idx+1);
 		      console.log("word: " + word);
+		      
+		      
+		      
+		      if (idx != word.length-1) {
+		    	  word = word.slice(0,idx) + '!' +  word.slice(idx+1);
+		    	  idx = word.indexOf(letter);
+		      } else {
+		    	  word = word.slice(0,idx) + '!';
+		    	  idx = -1;
+		      }
+		      
+		      
+		      console.log("sliced word: " + word);
 		    }
 		  }
-		  guess_amount--;
+		  
 		  
 		  if (correct_guesses == word_original.length) {
-			  $('#msg_info').html("You won!")
+			  $('#msg_info').html("You won!").css('color', 'green')
+			  disableInputs();
 		  }
-		  else if (guess_amount == 0) {
-			  $('#msg_info').html("Game over! The word was: " + word_original)
+		  else if (lifes === 0) {
+			  $('#msg_info').html("Game over! The word was: " + word_original).css('color', 'red')
+			  disableInputs();
 		  }
 		  
-		  $('#msg_guesses').html("Guesses left: " + guess_amount)
+		  $('#msg_lifes').html("Lifes left: " + lifes)
+		  
 		}
-	
+		
+		function startNewGame() {
+			setDefaultValues();
+			enableInputs();
+		}
+		
 		$('#msg').html(word_underscored)
+		$('#msg_letters').html("Letters left: " + (word.length - correct_guesses))
+		$('#msg_lifes').html("Lifes left: " + lifes)
 	
 	
 		</script>
