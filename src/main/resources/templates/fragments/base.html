@@ -2,7 +2,7 @@
 <head th:fragment="baseTemplate">
 	<!-- this is baseTemplate -->
 	<link rel="stylesheet" type="text/css"
-	      href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+	      href="webjars/bootstrap/3.4.1/css/bootstrap.min.css" />
 	
 </head>
 <body>
@@ -18,10 +18,12 @@
                 	<ul class="nav navbar-nav navbar-left">
                 		<li class="active"><a th:href="@{/}">Home</a></li>
                 	</ul>
-                    <ul class="nav navbar-nav navbar-right">
-                    	<li sec:authorize="isAuthenticated()" align="right"><a>Logged in as: <span th:text ="${#authentication.getPrincipal().getUsername()}"></span></a></li>
-                    	<li class="active" sec:authorize="isAuthenticated()" align="right"><a href="/logout">Logout</a></li>
-                    </ul>
+                	<form id="logout_form" th:action="@{/logout}" method="post">
+	                    <ul class="nav navbar-nav navbar-right">
+	                    	<li sec:authorize="isAuthenticated()" align="right"><a>Logged in as: <span th:text ="${#authentication.getPrincipal().getUsername()}"></span></a></li>
+	                    	<li class="active" sec:authorize="isAuthenticated()" align="right"><a type="submit" href="#" onclick="document.getElementById('logout_form').submit()">Log Out</a></li>
+	                    </ul>
+                    </form>
                 </div>
             </div>
         </div>

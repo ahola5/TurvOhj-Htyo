@@ -29,7 +29,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/login/", "/registration", "/h2_console/**").permitAll()
+                .antMatchers("/login", "/registration").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -38,11 +38,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .logout()
+            	.logoutSuccessUrl("/login")
                 .permitAll();
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
     }
-	//"/resources/**" ; "/webjars/**"
 	
 	@Override
     public void configure(WebSecurity web) throws Exception {

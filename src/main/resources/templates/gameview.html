@@ -142,11 +142,6 @@
 		      $('#msg').html(word_underscored)
 		      $('#msg_letters').html("Letters left: " + (word_original.length - correct_guesses))
 		      
-		      //var guessed_word = word.slice(idx+1);
-		      console.log("word: " + word);
-		      
-		      
-		      
 		      if (idx != word.length-1) {
 		    	  word = word.slice(0,idx) + '!' +  word.slice(idx+1);
 		    	  idx = word.indexOf(letter);
@@ -155,11 +150,8 @@
 		    	  idx = -1;
 		      }
 		      
-		      
-		      console.log("sliced word: " + word);
 		    }
 		  }
-		  
 		  
 		  if (correct_guesses == word_original.length) {
 			  $('#msg_info').html("You won!").css('color', 'green')

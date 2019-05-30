@@ -17,12 +17,5 @@ public class UserInput {
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	
-
-	
-
-	
-	
+	}	
 }

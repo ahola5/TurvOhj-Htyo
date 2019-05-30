@@ -6,8 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 @Entity
 public class User {
@@ -15,22 +13,19 @@ public class User {
 	@GeneratedValue
 	private Integer id;
 	
-	@PositiveOrZero
-	private Integer highscore;
-	
 	@NotBlank(message="Username cannot be empty")
 	@Pattern(regexp="^[a-zA-Z0-9]{2,20}$",
 			message="Username must be 2-20 characters long and it can't contain special characters")
 	private String username;
 	
 	@NotBlank(message="Password cannot be empty")
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?_-])(?=\\S+$).{8,}$",
-			message="Password must be at least 8 characters long and contain 1 small letter, 1 capital letter and 1 number")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?_-])(?=\\S+$).{8,60}$",
+			message="Password must be at least 8 characters long and contain 1 small letter, 1 capital letter, 1 number and 1 special character")
 	private String password;
 	
 	@NotBlank(message="Password cannot be empty")
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?_-])(?=\\S+$).{8,}$",
-			message="Password must be at least 8 characters long and contain 1 small letter, 1 capital letter and 1 number")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?_-])(?=\\S+$).{8,60}$",
+			message="Password must be at least 8 characters long and contain 1 small letter, 1 capital letter, 1 number and 1 special character")
 	@Transient
 	private String confirmPassword;
 	
@@ -38,10 +33,9 @@ public class User {
 		//Required default constructor
 	}
 
-	public User(Integer id, Integer highscore, String username, String password, String confirmPassword) {
+	public User(Integer id, String username, String password, String confirmPassword) {
 		super();
 		this.id = id;
-		this.highscore = highscore;
 		this.username = username;
 		this.password = password;
 		this.confirmPassword = confirmPassword;
@@ -53,14 +47,6 @@ public class User {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Integer getHighscore() {
-		return highscore;
-	}
-
-	public void setHighscore(Integer highscore) {
-		this.highscore = highscore;
 	}
 
 	public String getUsername() {
@@ -86,8 +72,4 @@ public class User {
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
 	}
-	
-	
-	
-	
 }
